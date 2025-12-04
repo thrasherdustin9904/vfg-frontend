@@ -1,4 +1,4 @@
-const API_BASE = "https://vfg-backend12.onrender.com";
+const API_BASE = "https://vfg-backend.onrender.com";
 
 async function request(path, { method = "GET", body, json = true, headers = {} } = {}) {
   const token = localStorage.getItem("token");
