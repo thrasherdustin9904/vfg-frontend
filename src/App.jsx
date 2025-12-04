@@ -1,25 +1,60 @@
-import { useState } from "react";
-import { getHealth } from "./api";
+import React from "react";
+import { Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import ProductPage from "./pages/ProductPage";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Cart from "./pages/Cart";
+import Admin from "./pages/Admin";
 
-function App() {
-  const [message, setMessage] = useState("Welcome to VF Gaming Store!");
-
-  async function handleRefresh() {
-    const data = await getHealth();
-    if (data.status === "ok") {
-      setMessage("Backend is connected successfully!");
-    } else {
-      setMessage("Error: Could not connect to backend.");
-    }
-  }
-
+function Header() {
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
+  const user = JSON.parse(localStorage.getItem("user") || "null");
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>VF Gaming Store</h1>
-      <button onClick={handleRefresh}>Refresh</button>
-      <p>{message}</p>
-    </div>
+    <header className="site-header">
+      <nav>
+        <Link to="/">VF Gaming Store</Link>
+        <div className="nav-right">
+          <Link to="/products">Products</Link>
+          <Link to="/cart">Cart</Link>
+          {user ? (
+            <>
+              {user.isAdmin && <Link to="/admin">Admin</Link>}
+              <button onClick={logout}>Logout</button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+            </>
+          )}
+        </div>
+      </nav>
+    </header>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <div>
+      <Header />
+      <main className="container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/admin/*" element={<Admin />} />
+          <Route path="*" element={<div>Not found</div>} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
