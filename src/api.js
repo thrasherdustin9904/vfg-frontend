@@ -1,9 +1,9 @@
-const API_URL = "https://vfg-backend12.onrender.com/api";
+const API_BASE = "https://vfg-backend12.onrender.com";
 
 export async function getHealth() {
   try {
-    const res = await fetch(`${API_URL}/health`);
-    return await res.json();
+    const response = await fetch(`${API_BASE}/api/health`);
+    return await response.json();
   } catch (err) {
     return { status: "error", error: err.message };
   }
